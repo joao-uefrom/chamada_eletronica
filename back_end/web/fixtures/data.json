@@ -1,0 +1,44 @@
+[
+  {
+    "model": "web.config",
+    "pk": 1,
+    "fields": {
+      "key": "entry_tolerance",
+      "value": "30"
+    }
+  },
+  {
+    "model": "web.config",
+    "pk": 2,
+    "fields": {
+      "key": "is_training"
+    }
+  },
+  {
+    "model": "web.shift",
+    "pk": 1,
+    "fields": {
+      "name": "Manhã",
+      "open": "07:00:00",
+      "close": "12:59:59"
+    }
+  },
+  {
+    "model": "web.shift",
+    "pk": 2,
+    "fields": {
+      "name": "Tarde",
+      "open": "13:00:00",
+      "close": "17:59:59"
+    }
+  },
+  {
+    "model": "web.shift",
+    "pk": 3,
+    "fields": {
+      "name": "Noite",
+      "open": "18:00:00",
+      "close": "21:59:59"
+    }
+  }
+]

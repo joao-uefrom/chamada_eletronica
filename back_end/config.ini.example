@@ -1,0 +1,8 @@
+[DEFAULT]
+secret_key=
+
+[postgresql]
+host=
+database=
+user=
+password=

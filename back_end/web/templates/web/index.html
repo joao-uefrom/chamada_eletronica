@@ -1,0 +1,386 @@
+{% extends 'web/base.html' %}
+{% block title %}Início{% endblock %}
+{% block content %}
+  <div class="container-xl">
+    <div class="page-header d-print-none">
+      <div class="row align-items-center">
+        <div class="col">
+          <h2 class="page-title">Chamada Eletrônica</h2>
+        </div>
+        <div class="col-auto ms-auto d-print-none">
+          <div class="btn-list">
+            {% if is_training %}
+              <div class="btn btn-loading text-dark d-sm-inline-block">
+                <div class="icon spinner-border"></div>
+                Treinando
+              </div>
+            {% else %}
+              <a href="{% url 'web/train' %}" class="btn btn-primary d-sm-inline-block">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                     stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                     stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path
+                      d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
+                  <path d="M10 9v6l5 -3z"></path>
+                </svg>
+                Treinar
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row row-deck row-cards">
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="subheader">Alunos Presentes ({{ current_shift }})</div>
+              <div class="h1 mb-3">{{ entries|length }}/{{ shift_students|length }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="subheader">Taxa de Presença ({{ current_shift }})</div>
+              <div class="h1 mb-3">{{ ratio }}%</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="subheader">Total de Alunos</div>
+              <div class="h1 mb-3">{{ page_obj.paginator.count }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="subheader">Abrangência do Modelo</div>
+              <div class="h1 mb-3">{{ coverage_model }}%</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Alunos Cadastrados</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table card-table table-vcenter text-nowrap datatable">
+                <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th class="text-center">Matrícula</th>
+                  <th class="text-center">Turma</th>
+                  <th class="text-center">CPF</th>
+                  <th class="text-end">Fotos</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for student in page_obj %}
+                  <tr>
+                    <td>{{ student.name }}</td>
+                    <td class="text-center">{{ student.enrolment }}</td>
+                    <td class="text-center">{{ student.c_lass }}</td>
+                    <td class="text-center">
+                      <div data-cpf>{{ student.cpf }}</div>
+                    </td>
+                    <td class="text-end">{{ student.photos }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="card-footer d-flex align-items-center">
+              <p class="m-0 text-muted">Página <span>{{ page_number }}</span> de
+                <span>{{ page_obj.paginator.num_pages }}</span></p>
+              <ul class="pagination m-0 ms-auto">
+                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                  <a class="page-link"
+                     href="{% if page_obj.has_previous %}?pagina={{ page_obj.previous_page_number }}{% endif %}"
+                     tabindex="-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                         stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <polyline points="15 6 9 12 15 18"></polyline>
+                    </svg>
+                    anterior
+                  </a>
+                </li>
+                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                  <a class="page-link"
+                     href="{% if page_obj.has_next %}?pagina={{ page_obj.next_page_number }}{% endif %}">
+                    próximo
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                         stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <polyline points="9 6 15 12 9 18"></polyline>
+                    </svg>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row row-cards mt-0">
+        <div class="col-lg-5">
+          <div class="row row-cards">
+            <div class="col-12 col-md-6 col-lg-12">
+              <div class="row row-cards">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Cadastrar Aluno</h3>
+                    </div>
+                    <div class="card-body">
+                      <form method="POST" action="{% url 'web/register' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <label for="name" class="form-label required">Nome Completo</label>
+                          <input type="text" id="name" name="name" required class="form-control"
+                                 placeholder="Digite o nome">
+                        </div>
+                        <div class="row">
+                          <div class="col-12 col-md-6">
+                            <div class="form-group mt-3">
+                              <label for="cpf" class="form-label required">CPF</label>
+                              <input type="text" id="cpf" name="cpf" required class="form-control"
+                                     placeholder="Digite o CPF do aluno"/>
+                            </div>
+                          </div>
+                          <div class="col-12 col-md-6">
+                            <div class="form-group mt-3">
+                              <label for="enrolment" class="form-label required">Matrícula</label>
+                              <input type="text" id="enrolment" name="enrolment" required class="form-control"
+                                     placeholder="Digite a matrícula do aluno"/>
+                            </div>
+                          </div>
+                          <div class="col-12 col-md-6">
+                            <div class="form-group mt-3">
+                              <label for="class" class="form-label required">Turma</label>
+                              <input type="text" id="class" name="class" required class="form-control"
+                                     placeholder="Digite a turma do aluno"/>
+                            </div>
+                          </div>
+                          <div class="col-12 col-md-6">
+                            <div class="form-group mt-3">
+                              <label for="shift" class="form-label required">Turno</label>
+                              <select id="shift" name="shift" class="form-select">
+                                <option selected disabled>Selecione</option>
+                                {% for shift in shifts %}
+                                  <option value="{{ shift.id }}">{{ shift.name }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-footer">
+                          <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Exportar Relatório de Frequência</h3>
+                    </div>
+                    <div class="card-body">
+                      <form method="POST" action="{% url 'web/export' %}">
+                        {% csrf_token %}
+                        <div class="subheader mb-2">Período</div>
+                        <div class="row g-2 align-items-center mb-3">
+                          <div class="col">
+                            <div class="input-group">
+                        <span class="input-group-text">
+                          de
+                        </span>
+                              <input id="export-from" name="export-from" class="form-control">
+                            </div>
+                          </div>
+                          <div class="col-auto">—</div>
+                          <div class="col">
+                            <div class="input-group">
+                        <span class="input-group-text">
+                          até
+                        </span>
+                              <input id="export-to" name="export-to" class="form-control">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-footer">
+                          <button type="submit" class="btn btn-primary w-100">Exportar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Horário de Entrada e Saída</h3>
+                </div>
+                <div class="card-body">
+                  <form method="POST" action="{% url 'web/update-shifts' %}">
+                    {% csrf_token %}
+                    {% for shift in shifts %}
+                      <div class="subheader mb-2">{{ shift.name }}</div>
+                      <div class="row g-2 align-items-center mb-3">
+                        <div class="col">
+                          <div class="input-group">
+                        <span class="input-group-text">
+                          das
+                        </span>
+                            <input type="time" value="{{ shift.open }}" name="{{ shift.id }}.open" class="form-control">
+                          </div>
+                        </div>
+                        <div class="col-auto">—</div>
+                        <div class="col">
+                          <div class="input-group">
+                        <span class="input-group-text">
+                          às
+                        </span>
+                            <input type="time" value="{{ shift.close }}" name="{{ shift.id }}.close"
+                                   class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    <div class="subheader mb-2">Tolerância</div>
+                    <div class="input-group">
+                      <input type="number" value="{{ entry_tolerance }}" name="entry_tolerance"
+                             class="form-control text-end">
+                      <span class="input-group-text">
+                          minutos
+                        </span>
+                    </div>
+                    <div class="form-footer">
+                      <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="row row-cards">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Totens</h3>
+                </div>
+                <div class="table-responsive">
+                  <table class="table card-table table-vcenter text-nowrap datatable">
+                    <thead>
+                    <tr>
+                      <th>Endereço MAC</th>
+                      <th>Endereço IP</th>
+                      <th>CPF</th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for client in clients %}
+                      <tr>
+                        <td>{{ client.mac_address }}
+                          <form id="form{{ forloop.counter0 }}" action="{% url 'web/capture' %}" method="POST">
+                            {% csrf_token %}
+                            <input form="form{{ forloop.counter0 }}" type="hidden" name="mac_address"
+                                   value="{{ client.mac_address }}"/>
+                          </form>
+                        </td>
+                        <td>{{ client.ip }}</td>
+                        <td class="w-25">
+                          <input type="text" class="form-control" required name="cpf"
+                                 form="form{{ forloop.counter0 }}"
+                                 {% if client.student %}readonly{% endif %} placeholder="CPF"
+                                 value="{{ client.student.cpf }}"/>
+                        </td>
+                        <td class="text-end w-25">
+                          {% if client.student %}
+                            <input form="form{{ forloop.counter0 }}" type="submit" class="btn btn-red align-text-top"
+                                   value="Encerrar Captura"/>
+                          {% else %}
+                            <input form="form{{ forloop.counter0 }}" type="submit" class="btn btn-blue align-text-top"
+                                   value="Iniciar Captura"/>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Alunos Presentes</h3>
+                </div>
+                <div class="table-responsive">
+                  <table class="table card-table table-vcenter text-nowrap datatable">
+                    <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Matrícula</th>
+                      <th>Turma</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entry in entries %}
+                      <tr>
+                        <td>{{ entry.student.name }}</td>
+                        <td>{{ entry.student.enrolment }}</td>
+                        <td>{{ entry.student.c_lass }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+      $(document).ready(function () {
+          $('[name="cpf"]').mask('000.000.000-00');
+          $('[data-cpf]').mask('000.000.000-00');
+
+          const picker = new Litepicker({
+              firstDay: 0,
+              element: document.getElementById('export-from'),
+              elementEnd: document.getElementById('export-to'),
+              format: 'DD/MM/YYYY',
+              dropdowns: {'minYear': 2020, 'maxYear': null, 'months': true, 'years': true},
+              lang: 'pt-BR',
+              tooltipText: {'one': 'dia', 'other': 'dias'},
+              singleMode: false,
+              allowRepick: true,
+          });
+
+          picker.setDateRange(new Date(), new Date());
+      });
+
+
+  </script>
+{% endblock %}

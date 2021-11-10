@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+  <title>{% block title %}{% endblock %} | Chamada Eletrônica</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'web/css/tabler.min.css' %}"/>
+
+</head>
+<body class="antialiased">
+<div class="wrapper">
+  <div class="page-wrapper">
+    {% if messages %}
+      <div class="container-xl">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} mt-3 mb-0">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<script src="{% static 'web/js/jquery-3.6.0.slim.min.js' %}"></script>
+<script src="{% static 'web/js/jquery.mask.min.js' %}"></script>
+<script src="{% static 'web/js/litepicker.js' %}"></script>
+<script src="{% static 'web/js/tabler.min.js' %}"></script>
+{% block script %}{% endblock %}
+</body>
+</html>
