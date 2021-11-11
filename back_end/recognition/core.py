@@ -1,7 +1,5 @@
-import filecmp
 import os
 import pickle
-import uuid
 
 import face_recognition
 from sklearn import neighbors
@@ -31,23 +29,7 @@ def add_face(id: str, image_data: bytes, content_type: str):
     if utils.number_of_faces(image) != 1:
         return
 
-    if len(images_in_dir) > 0:
-        temp_name = 'temp-' + str(uuid.uuid4().hex) + extension
-        temp_image_path = os.path.join(face_dir, temp_name)
-
-        image.save(temp_image_path)
-
-        for image_in_dir in images_in_dir:
-            image_to_compare_path = os.path.join(face_dir, image_in_dir)
-
-            if filecmp.cmp(temp_image_path, image_to_compare_path, shallow=False):
-                os.remove(temp_image_path)
-                return
-
-        os.rename(temp_image_path, definitive_image_path)
-
-    else:
-        image.save(definitive_image_path)
+    image.save(definitive_image_path)
 
 
 def train():
