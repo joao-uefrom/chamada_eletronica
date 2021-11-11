@@ -12,22 +12,21 @@ model_path = os.path.join(train_dir, 'trained_knn_model.clf')
 
 
 def add_face(id: str, image_data: bytes, content_type: str):
+    image = utils.binary2image(image_data)
     extension = utils.image_extension(content_type)
 
-    image = utils.binary2image(image_data)
+    if utils.number_of_faces(image) != 1:
+        return
 
     face_dir = os.path.join(train_dir, id)
 
     if not os.path.exists(face_dir):
         os.makedirs(face_dir)
 
-    images_in_dir = os.listdir(face_dir)
+    number_of_images = len(os.listdir(face_dir))
 
-    name = str(len(images_in_dir) + 1) + extension
+    name = str(number_of_images + 1) + extension
     definitive_image_path = os.path.join(face_dir, name)
-
-    if utils.number_of_faces(image) != 1:
-        return
 
     image.save(definitive_image_path)
 
