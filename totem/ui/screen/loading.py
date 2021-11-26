@@ -7,7 +7,8 @@ layout = sg.Column(
         [sg.Column([
             [sg.Text('Endereço do servidor:')],
             [sg.Input(key='-LOADING INPUT-')],
-            [sg.Button('Tentar de novo', expand_x=True, key='-TRY AGAIN-')]
+            [sg.Button('Tentar de novo', expand_x=True, key='-TRY AGAIN-')],
+            [sg.Button('Desligar', expand_x=True, key='-EXIT-')]
         ], visible=False, key='-LOADING ERROR-')]
     ], element_justification='center', expand_y=True, expand_x=True, visible=True, key='-LOADING SCREEN-'
 )

@@ -8,7 +8,7 @@ ui.go2('-HOME SCREEN-')
 while True:
     event, values = ui.window.read()
 
-    if event == '-EXIT-' or event == sg.WIN_CLOSED:
+    if '-EXIT-' in event or event == sg.WIN_CLOSED:
         break
 
     if 'ROUTE' in event:

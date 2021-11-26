@@ -25,7 +25,7 @@ class LoadingController:
                 window['-LOADING ERROR-'].update(visible=True)
 
             event, values = window.read()
-            if event == '-EXIT-' or event == sg.WIN_CLOSED:
+            if '-EXIT-' in event or event == sg.WIN_CLOSED:
                 exit(0)
 
             window['-LOADING TEXT-'].update('Carregando...')
