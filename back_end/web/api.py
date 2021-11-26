@@ -43,13 +43,13 @@ def recognition(request: HttpRequest):
     image_data = request.read()
     mac_address = utils.get_mac_address(request)
 
-    results = recognition_face(image_data)
+    result = recognition_face(image_data)
 
-    if len(results) != 1:
+    if result is None:
         return JsonResponse({'erro': 'Nenhum ou mais de um resultado encontrado'}, status=422)
 
     totem = Totem.objects.get(mac_address=mac_address)
-    student = Student.objects.get(cpf=results[0][0])
+    student = Student.objects.get(cpf=result[0][0])
 
     __make_entry(totem, student)
 
