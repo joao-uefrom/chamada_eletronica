@@ -11,14 +11,14 @@ train_dir = os.path.join(BASE_DIR, 'static')
 model_path = os.path.join(train_dir, 'trained_knn_model.clf')
 
 
-def add_face(id: str, image_data: bytes, content_type: str):
+def add_face(label: str, image_data: bytes, mimetype: str):
     image = utils.binary2image(image_data)
-    extension = utils.image_extension(content_type)
+    extension = utils.image_extension(mimetype)
 
     if utils.number_of_faces(image) != 1:
         return
 
-    face_dir = os.path.join(train_dir, id)
+    face_dir = os.path.join(train_dir, label)
 
     if not os.path.exists(face_dir):
         os.makedirs(face_dir)
@@ -34,10 +34,10 @@ def add_face(id: str, image_data: bytes, content_type: str):
 def train():
     x, y = [], []
 
-    classes_dir = [class_dir for class_dir in os.listdir(train_dir) if os.path.isdir(class_dir)]
+    labels = [label for label in os.listdir(train_dir) if os.path.isdir(label)]
 
-    for class_id in classes_dir:
-        images_path = os.listdir(os.path.join(train_dir, class_id))
+    for label in labels:
+        images_path = os.listdir(os.path.join(train_dir, label))
 
         for img_path in images_path:
             image = face_recognition.load_image_file(img_path)
@@ -45,10 +45,9 @@ def train():
 
             if len(face_locations) == 1:
                 x.append(face_recognition.face_encodings(image, known_face_locations=face_locations)[0])
-                y.append(class_id)
+                y.append(label)
 
     knn_clf = neighbors.KNeighborsClassifier(n_neighbors=1, algorithm='ball_tree', weights='distance')
-    knn_clf.kneighbors()
     knn_clf.fit(x, y)
 
     with open(model_path, 'wb') as model:
@@ -62,24 +61,15 @@ def recognition_face(image_data: bytes):
     with open(model_path, 'rb') as model:
         knn_clf = pickle.load(model)
 
-    x_face_locations = face_recognition.face_locations(image)
+    face_locations = face_recognition.face_locations(image)
 
-    if len(x_face_locations) == 0:
-        return []
+    if len(face_locations) != 1:
+        return None
 
-    faces_encodings = face_recognition.face_encodings(image, known_face_locations=x_face_locations)
+    faces_encodings = face_recognition.face_encodings(image, known_face_locations=face_locations)
 
-    closest_distances = knn_clf.kneighbors(faces_encodings)
+    closest_distance = knn_clf.kneighbors(faces_encodings)[0][0][0]
 
-    are_matches = [closest_distances[0][i][0] <= distance_threshold for i in range(len(x_face_locations))]
+    are_match = closest_distance <= distance_threshold
 
-    return [
-        [pred, loc] if rec else ['Desconhecido', loc]
-        for pred, loc, rec in zip(knn_clf.predict(faces_encodings), x_face_locations, are_matches)
-    ]
-
-
-if __name__ == "__main__":
-    print("Treinando classificador KNN...")
-    train()
-    print("Treinamento Completo!")
+    return knn_clf.predict(faces_encodings)[0] if are_match else None
