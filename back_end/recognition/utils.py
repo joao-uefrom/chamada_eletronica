@@ -21,12 +21,8 @@ def image2array(image):
     return np.asarray(image)
 
 
-def image2gray(image):
-    return image.convert(mode='L')
-
-
-def image_extension(content_type: str):
-    return mimetypes.guess_extension(content_type)
+def image_extension(mimetype: str):
+    return mimetypes.guess_extension(mimetype)
 
 
 def number_of_faces(image):
