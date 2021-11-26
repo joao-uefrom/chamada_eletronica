@@ -54,7 +54,7 @@ def face(image, position, scale=None):
 def center(image):
     h, w = image.shape[:2]
 
-    color = (0, 0, 0)
+    color = (0, 255, 0)
 
     cv2.line(image, (0, int(h / 2)), (w, int(h / 2)), color, 1)
     cv2.line(image, (int(w / 2), 0), (int(w / 2), h), color, 1)

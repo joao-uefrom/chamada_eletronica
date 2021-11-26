@@ -29,11 +29,6 @@ class DetectorController:
 
         self.framerate = framerate
 
-        self.headers = {
-            'x-mac-address': self.config_controller.config.mac,
-            'content-type': 'image/jpeg'
-        }
-
     def start(self):
         if self.running:
             return
@@ -154,7 +149,7 @@ class DetectorController:
         try:
             requests.post(
                 self.config_controller.config.server + '/api/register',
-                headers=self.headers,
+                headers=self.config_controller.headers,
                 data=utils.image2bytes(self.frame_register, extension='.jpg')
             )
         except requests.exceptions.ConnectionError:
@@ -167,7 +162,7 @@ class DetectorController:
         try:
             r = requests.post(
                 self.config_controller.config.server + '/api/recognition',
-                headers=self.headers,
+                headers=self.config_controller.headers,
                 data=utils.image2bytes(self.frame, extension='.jpg')
             )
 

@@ -37,6 +37,11 @@ class ConfigController:
         except FileNotFoundError:
             self.config: ConfigModel = ConfigModel()
 
+        self.headers = {
+            'x-mac-address': self.config.mac,
+            'content-type': 'image/jpeg'
+        }
+
     def load(self):
         self.window['-BLUR SLIDER-'].update(self.config.blur)
         self.window['-CAM INPUT-'].update(self.config.cam)
