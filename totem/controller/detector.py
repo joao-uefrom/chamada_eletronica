@@ -17,7 +17,7 @@ class DetectorController:
     stream = None
     running = False
 
-    detector = None
+    engine = None
     frame = None
 
     fps = 0
@@ -37,9 +37,9 @@ class DetectorController:
         self.running = True
 
         if self.config_controller.config.engine == 'tensors':
-            self.detector = Tensors()
+            self.engine = Tensors()
         else:
-            self.detector = CascadeClassifier()
+            self.engine = CascadeClassifier()
 
         Thread(target=self.__update, args=(), daemon=True).start()
 
@@ -88,7 +88,7 @@ class DetectorController:
     def __process(self):
         frame_resized = utils.resize(self.frame, scale=self.scale)
         blur = utils.variance_of_laplacian(self.frame)
-        results = self.detector.detect(frame_resized)
+        results = self.engine.detect(frame_resized)
 
         if len(results) == 1 and \
                 blur >= self.config_controller.config.blur:
@@ -100,7 +100,7 @@ class DetectorController:
         blur = utils.variance_of_laplacian(self.frame)
         frame_resized = utils.resize(self.frame, scale=self.scale)
 
-        results = self.detector.detect(frame_resized)
+        results = self.engine.detect(frame_resized)
         if len(results) > 0:
             for position in results:
                 draw.face(self.frame, position, self.scale)
@@ -116,7 +116,7 @@ class DetectorController:
         self.frame = utils.crop(self.frame, 280, 320, center=True)
         blur = utils.variance_of_laplacian(self.frame)
         frame_resized = utils.resize(self.frame, scale=self.scale)
-        results = self.detector.detect(frame_resized)
+        results = self.engine.detect(frame_resized)
 
         if len(results) == 1 and blur >= self.config_controller.config.blur:
             self.frame_register = np.copy(self.frame)
