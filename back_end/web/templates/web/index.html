@@ -294,24 +294,24 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for client in clients %}
+                    {% for totem in totens %}
                       <tr>
-                        <td>{{ client.mac_address }}
+                        <td>{{ totem.mac_address }}
                           <form id="form{{ forloop.counter0 }}" action="{% url 'web/capture' %}" method="POST">
                             {% csrf_token %}
                             <input form="form{{ forloop.counter0 }}" type="hidden" name="mac_address"
-                                   value="{{ client.mac_address }}"/>
+                                   value="{{ totem.mac_address }}"/>
                           </form>
                         </td>
-                        <td>{{ client.ip }}</td>
+                        <td>{{ totem.ip }}</td>
                         <td class="w-25">
                           <input type="text" class="form-control" required name="cpf"
                                  form="form{{ forloop.counter0 }}"
-                                 {% if client.student %}readonly{% endif %} placeholder="CPF"
-                                 value="{{ client.student.cpf }}"/>
+                                 {% if totem.student %}readonly{% endif %} placeholder="CPF"
+                                 value="{{ totem.student.cpf }}"/>
                         </td>
                         <td class="text-end w-25">
-                          {% if client.student %}
+                          {% if totem.student %}
                             <input form="form{{ forloop.counter0 }}" type="submit" class="btn btn-red align-text-top"
                                    value="Encerrar Captura"/>
                           {% else %}
