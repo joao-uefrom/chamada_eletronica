@@ -1,5 +1,3 @@
-import PySimpleGUI as sg
-
 import controller
 import ui
 
@@ -8,7 +6,7 @@ ui.go2('-HOME SCREEN-')
 while True:
     event, values = ui.window.read()
 
-    if '-EXIT-' in event or event == sg.WIN_CLOSED:
+    if '-EXIT-' in event or event == ui.sg.WIN_CLOSED:
         break
 
     if 'ROUTE' in event:
