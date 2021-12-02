@@ -14,9 +14,9 @@ def ping(request: HttpRequest):
     if not utils.is_valid_mac_address(mac_address):
         return HttpResponseBadRequest()
 
-    client = Totem.objects.get_or_create(mac_address=mac_address)[0]
-    client.ip = ip
-    client.save()
+    totem = Totem.objects.get_or_create(mac_address=mac_address)[0]
+    totem.ip = ip
+    totem.save()
 
     return HttpResponse()
 
@@ -49,7 +49,7 @@ def recognition(request: HttpRequest):
         return JsonResponse({'erro': 'Nenhum ou mais de um resultado encontrado'}, status=422)
 
     totem = Totem.objects.get(mac_address=mac_address)
-    student = Student.objects.get(cpf=result[0][0])
+    student = Student.objects.get(cpf=result)
 
     __make_entry(totem, student)
 
@@ -75,4 +75,4 @@ def __make_entry(totem, student):
     if current_time > shift_open:
         return JsonResponse({'erro': 'Entrada negada, aluno atrasado.'}, status=422)
     else:
-        Entry.objects.create(student=student, client=totem)
+        Entry.objects.create(student=student, totem=totem)
