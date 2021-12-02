@@ -28,3 +28,4 @@ class LoadingController:
 
             values['-SERVER INPUT-'] = values['-LOADING INPUT-']
             config_controller.save(values)
+            config_controller.load()
