@@ -26,5 +26,5 @@ class LoadingController:
             window['-LOADING TEXT-'].update('Carregando...')
             window['-LOADING ERROR-'].update(visible=False)
 
-            config_controller.config.server = values['-LOADING INPUT-']
+            values['-SERVER INPUT-'] = values['-LOADING INPUT-']
             config_controller.save(values)
