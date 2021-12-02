@@ -296,7 +296,7 @@
                     <tbody>
                     {% for totem in totens %}
                       <tr>
-                        <td>{{ totem.mac_address }}
+                        <td><div data-mac>{{ totem.mac_address }}</div>
                           <form id="form{{ forloop.counter0 }}" action="{% url 'web/capture' %}" method="POST">
                             {% csrf_token %}
                             <input form="form{{ forloop.counter0 }}" type="hidden" name="mac_address"
@@ -365,6 +365,7 @@
       $(document).ready(function () {
           $('[name="cpf"]').mask('000.000.000-00');
           $('[data-cpf]').mask('000.000.000-00');
+          $('[data-mac]').mask('AA:AA:AA:AA:AA:AA');
 
           const picker = new Litepicker({
               firstDay: 0,
