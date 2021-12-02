@@ -34,24 +34,24 @@ def add_face(label: str, image_data: bytes, mimetype: str):
 def train():
     x, y = [], []
 
-    labels = [label for label in os.listdir(train_dir) if os.path.isdir(label)]
+    labels = [label for label in os.listdir(train_dir) if os.path.isdir(os.path.join(train_dir, label))]
 
     for label in labels:
         images_path = os.listdir(os.path.join(train_dir, label))
 
         for img_path in images_path:
-            image = face_recognition.load_image_file(img_path)
+            image = face_recognition.load_image_file(os.path.join(train_dir, label, img_path))
             face_locations = face_recognition.face_locations(image)
 
             if len(face_locations) == 1:
                 x.append(face_recognition.face_encodings(image, known_face_locations=face_locations)[0])
                 y.append(label)
 
-    knn_clf = neighbors.KNeighborsClassifier(n_neighbors=1, algorithm='ball_tree', weights='distance')
-    knn_clf.fit(x, y)
-
-    with open(model_path, 'wb') as model:
-        pickle.dump(knn_clf, model)
+    if len(labels) > 0:
+        with open(model_path, 'wb') as model:
+            knn_clf = neighbors.KNeighborsClassifier(n_neighbors=1, algorithm='ball_tree', weights='distance')
+            knn_clf.fit(x, y)
+            pickle.dump(knn_clf, model)
 
 
 def recognition_face(image_data: bytes):

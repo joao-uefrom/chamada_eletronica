@@ -164,7 +164,7 @@ def export(request: HttpRequest):
 
 
 def train(request: HttpRequest):
-    if request.method == 'POST':
+    if request.method == 'GET':
         is_training = Config.objects.get(key='is_training')
 
         if is_training.value:
