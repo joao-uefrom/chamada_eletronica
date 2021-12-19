@@ -51,14 +51,7 @@ def recognition(request: HttpRequest):
     totem = Totem.objects.get(mac_address=mac_address)
     student = Student.objects.get(cpf=result)
 
-    __make_entry(totem, student)
-
-    return JsonResponse({
-        'class': student.c_lass,
-        'enrolment': student.enrolment,
-        'name': student.name,
-        'shift': student.shift.name
-    })
+    return __make_entry(totem, student)
 
 
 def __make_entry(totem, student):
@@ -66,13 +59,18 @@ def __make_entry(totem, student):
 
     entry = Entry.objects.filter(created_at__day=current_time.day, student=student)
 
-    if len(entry) > 0:
-        return
+    if len(entry) == 0:
+        entry_tolerance = int(Config.objects.get(key='entry_tolerance').value)
+        shift_open = datetime.combine(current_time.date(), student.shift.open) + timedelta(minutes=entry_tolerance)
 
-    entry_tolerance = int(Config.objects.get(key='entry_tolerance').value)
-    shift_open = datetime.combine(current_time.date(), student.shift.open) + timedelta(minutes=entry_tolerance)
+        if current_time > shift_open:
+            return JsonResponse({'erro': 'Entrada negada, estudante atrasado.'}, status=422)
+        else:
+            Entry.objects.create(student=student, totem=totem)
 
-    if current_time > shift_open:
-        return JsonResponse({'erro': 'Entrada negada, aluno atrasado.'}, status=422)
-    else:
-        Entry.objects.create(student=student, totem=totem)
+    return JsonResponse({
+        'class': student.c_lass,
+        'enrolment': student.enrolment,
+        'name': student.name,
+        'shift': student.shift.name
+    })
