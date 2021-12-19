@@ -79,6 +79,7 @@
                   <th>Nome</th>
                   <th class="text-center">Matrícula</th>
                   <th class="text-center">Turma</th>
+                  <th class="text-center">Turno</th>
                   <th class="text-center">CPF</th>
                   <th class="text-end">Fotos</th>
                 </tr>
@@ -89,6 +90,7 @@
                     <td>{{ student.name }}</td>
                     <td class="text-center">{{ student.enrolment }}</td>
                     <td class="text-center">{{ student.c_lass }}</td>
+                    <td class="text-center">{{ student.shift.name }}</td>
                     <td class="text-center">
                       <div data-cpf>{{ student.cpf }}</div>
                     </td>
